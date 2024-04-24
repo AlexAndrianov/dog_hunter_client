@@ -14,7 +14,7 @@ if (Qt6_VERSION VERSION_GREATER_EQUAL 6.3)
 endif()
 
 # Add the library subdirectory
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../core/)
+add_subdirectory(core)
 
 qt_add_executable(dog_hunterApp src/main.cpp)
 
@@ -29,6 +29,7 @@ target_link_libraries(dog_hunterApp PRIVATE
     Qt6::Gui
     Qt6::Qml
     Qt6::Quick
+    core
 )
 
 if (BUILD_QDS_COMPONENTS)
