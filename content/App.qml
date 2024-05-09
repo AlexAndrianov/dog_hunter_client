@@ -2,18 +2,28 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 import QtQuick 6.2
-import dog_hunter
+import DogHunter 1.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Window
+import QtQuick.Controls 6.2
+import QtQuick.Layouts
 
 Window {
-    width: mainScreen.width
-    height: mainScreen.height
+    width: 400
+    height: 800
 
     visible: true
     title: "dog_hunter"
 
-    Screen01 {
-        id: mainScreen
+    Controller {
+        id: controller
     }
 
+    StackView {
+        id: changer
+        anchors.fill: parent
+        initialItem: Screen01{}
+    }
 }
 

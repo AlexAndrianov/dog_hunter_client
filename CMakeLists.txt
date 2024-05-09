@@ -6,8 +6,14 @@ option(BUILD_QDS_COMPONENTS "Build design studio components" ON)
 project(dog_hunterApp LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_CXX_STANDARD 23)
 
-find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Qml Quick)
+find_package(Qt6 6.6.3 REQUIRED COMPONENTS Core Gui Qml Quick Network)
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+#option(BUILD_QDS_COMPONENTS "Build design studio components" OFF)
+#set(BUILD_QDS_COMPONENTS OFF CACHE BOOL "Build design studio components" FORCE)
 
 if (Qt6_VERSION VERSION_GREATER_EQUAL 6.3)
     qt_standard_project_setup()
@@ -16,7 +22,17 @@ endif()
 # Add the library subdirectory
 add_subdirectory(core)
 
-qt_add_executable(dog_hunterApp src/main.cpp)
+set(SOURCES
+    src/Controller.cpp
+    src/main.cpp
+)
+
+set(HEADERS
+    src/Controller.h
+    src/TCPClient.h
+)
+
+qt_add_executable(dog_hunterApp ${SOURCES} ${HEADERS})
 
 qt_add_resources(dog_hunterApp "configuration"
     PREFIX "/"
@@ -29,6 +45,7 @@ target_link_libraries(dog_hunterApp PRIVATE
     Qt6::Gui
     Qt6::Qml
     Qt6::Quick
+    Qt6::Network
     core
 )
 

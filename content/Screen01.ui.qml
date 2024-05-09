@@ -1,5 +1,3 @@
-
-
 /*
 This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
 It is supposed to be strictly declarative and only uses a subset of QML. If you edit
@@ -8,18 +6,23 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 */
 import QtQuick 6.2
 import QtQuick.Controls 6.2
-import dog_hunter
 import QtQuick.Layouts
 
 Rectangle {
-    id: rectangle
-    width: Constants.width
-    height: Constants.height
+    id: firstUsesCase
+    width: 400
+    height: 800
+    anchors.fill: parent
 
     anchors.verticalCenter: parent.verticalCenter
     anchors.horizontalCenter: parent.horizontalCenter
 
-    color: Constants.backgroundColor
+    MouseArea {
+        id: dragArea
+        anchors.fill: parent
+        drag.target: firstUsesCase // Set the target to the whole screen
+        drag.axis: Drag.YAxis // Allow dragging in both X and Y directions
+    }
 
     ColumnLayout {
         id: columnLayout
@@ -28,7 +31,7 @@ Rectangle {
         Text {
             id: text1
             text: qsTr("The Dog Hunter")
-            anchors.topMargin: 49
+            anchors.topMargin: 10
             font.pixelSize: 32
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: false
@@ -52,6 +55,16 @@ Rectangle {
             }
         }
 
+        Text {
+            id: textWarningLogin
+            text: "Invalid password or login!"
+            font.pointSize: 12
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            visible: false
+            font.bold: true
+            color: "red"
+        }
+
         // Password input field
         TextInput {
             id: passwordInput
@@ -69,10 +82,20 @@ Rectangle {
             }
         }
 
+        Text {
+            id: textWarningRegister
+            text: "Invalid password!"
+            font.pointSize: 12
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            visible: false
+            font.bold: true
+            color: "red"
+        }
+
         Image {
             id: image
-            width: 300
-            height: 600
+            width: 200
+            height: 400
             opacity: 0.25
             source: "img/boxer-dog.jpg"
             Layout.fillHeight: true
@@ -82,8 +105,8 @@ Rectangle {
 
         RowLayout {
             id: rowLayout
-            width: 800
-            height: 100
+            //width: 800
+            //height: 100
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillHeight: true
             Layout.fillWidth: true
@@ -97,16 +120,20 @@ Rectangle {
                 font.pointSize: 20
                 display: AbstractButton.TextOnly
                 Layout.margins: 33
+                onClicked: controller.onLogin(usernameInput.text, passwordInput.text)
+                enabled: !controller.inProcess
             }
 
             Button {
                 id: button1
-                width: button.icon.width
+                width: 150
                 text: qsTr("Register")
                 layer.textureMirroring: ShaderEffectSource.NoMirroring
                 layer.format: ShaderEffectSource.RGBA
                 font.pointSize: 20
+                display: AbstractButton.TextOnly
                 Layout.margins: 33
+                enabled: !controller.inProcess
             }
         }
     }
@@ -115,4 +142,22 @@ Rectangle {
             name: "clicked"
         }
     ]
+
+    Connections {
+        target: controller
+        onLoginResult: function(value) {
+            textWarningLogin.visible = false
+            textWarningRegister.visible = false
+
+            if(value === 0) {
+                var page2 = Qt.createComponent("Screen02.ui.qml");
+                 if (page2.status === Component.Ready) {
+                     page2.createObject(changer);
+                }
+            }
+            else if(value === 1 || value === 2) {
+                textWarningLogin.visible = true
+            }
+        }
+    }
 }
